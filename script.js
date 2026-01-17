@@ -22,6 +22,7 @@ class TypingPractice {
         this.bindEvents();
         this.initAudio();
         this.loadLeaderboard();
+        this.updateProgressBar(100);
         this.newTarget();
     }
 
@@ -200,6 +201,18 @@ class TypingPractice {
         document.getElementById('soundBtn').textContent = `音效: ${this.soundEnabled ? '开' : '关'}`;
     }
 
+    updateProgressBar(progress) {
+        const progressFill = document.getElementById('progressFill');
+        progressFill.style.width = `${progress}%`;
+        
+        progressFill.classList.remove('warning', 'danger');
+        if (progress <= 20) {
+            progressFill.classList.add('danger');
+        } else if (progress <= 40) {
+            progressFill.classList.add('warning');
+        }
+    }
+
     reset() {
         this.isStarted = false;
         this.correct = 0;
@@ -213,9 +226,12 @@ class TypingPractice {
         }
 
         document.getElementById('timer').textContent = '60';
-        document.getElementById('timerDisplay').classList.remove('show');
+        const timerDisplay = document.getElementById('timerDisplay');
+        timerDisplay.classList.remove('show');
+        timerDisplay.classList.add('hidden');
         document.getElementById('startBtn').disabled = false;
         document.getElementById('startBtn').textContent = '开始练习';
+        this.updateProgressBar(100);
         
         this.updateStats();
         this.newTarget();
@@ -227,13 +243,20 @@ class TypingPractice {
             this.startTime = Date.now();
             this.timeLeft = 60;
             
-            document.getElementById('timerDisplay').classList.add('show');
+            const timerDisplay = document.getElementById('timerDisplay');
+            timerDisplay.classList.remove('hidden');
+            timerDisplay.classList.add('show');
             document.getElementById('startBtn').disabled = true;
             document.getElementById('startBtn').textContent = '练习中...';
+            
+            this.updateProgressBar(100);
             
             this.timer = setInterval(() => {
                 this.timeLeft--;
                 document.getElementById('timer').textContent = this.timeLeft;
+                
+                const progress = (this.timeLeft / 60) * 100;
+                this.updateProgressBar(progress);
                 
                 if (this.timeLeft <= 0) {
                     this.endGame();
