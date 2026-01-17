@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打字练习</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>打字练习</h1>
+            <p>适合初学者的打字练习工具</p>
+        </header>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" data-mode="practice">自由练习</button>
+            <button class="mode-btn" data-mode="timed">限时挑战</button>
+        </div>
+
+        <div class="practice-mode-selector">
+            <button class="practice-mode-btn active" data-practice="letters">字母</button>
+            <button class="practice-mode-btn" data-practice="words">单词</button>
+        </div>
+
+        <div id="timerDisplay" class="timer-display hidden">
+            <span class="timer-label">剩余时间</span>
+            <span class="timer-value" id="timer">60</span>
+            <span class="timer-unit">秒</span>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">正确</span>
+                <span class="stat-value" id="correct">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">错误</span>
+                <span class="stat-value" id="wrong">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">准确率</span>
+                <span class="stat-value" id="accuracy">100%</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">速度</span>
+                <span class="stat-value" id="speed">0</span>
+                <span class="stat-unit">CPM</span>
+            </div>
+        </div>
+
+        <div class="display-area">
+            <div class="current-char" id="currentChar">A</div>
+            <div class="hint">按下显示的字母键</div>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="controls">
+            <button class="control-btn" id="startBtn">开始练习</button>
+            <button class="control-btn" id="resetBtn">重置</button>
+            <button class="control-btn" id="soundBtn">音效: 开</button>
+        </div>
+
+        <div class="keyboard-hint">
+            <p>提示：使用键盘上的对应字母键进行练习</p>
+        </div>
+
+        <div class="leaderboard">
+            <h3>排行榜</h3>
+            <div id="leaderboardList" class="leaderboard-list">
+                <p class="empty-leaderboard">暂无记录</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
