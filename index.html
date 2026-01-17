@@ -16,6 +16,7 @@
         <div class="mode-selector">
             <button class="mode-btn active" data-mode="practice">自由练习</button>
             <button class="mode-btn" data-mode="timed">限时挑战</button>
+            <button class="mode-btn" data-mode="game">赛车游戏</button>
         </div>
 
         <div class="practice-mode-selector">
@@ -36,29 +37,57 @@
             </div>
         </div>
 
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-label">正确</span>
-                <span class="stat-value" id="correct">0</span>
+        <div id="gameArea" class="game-area hidden">
+            <div class="game-stats">
+                <div class="game-stat-item">
+                    <span class="game-stat-label">行驶距离</span>
+                    <span class="game-stat-value" id="distance">0</span>
+                    <span class="game-stat-unit">米</span>
+                </div>
             </div>
-            <div class="stat-item">
-                <span class="stat-label">错误</span>
-                <span class="stat-value" id="wrong">0</span>
+            <div class="race-track">
+                <div class="track-line"></div>
+                <div class="track-line"></div>
+                <div class="track-line"></div>
+                <div class="car" id="car">
+                    <div class="car-body"></div>
+                    <div class="car-top"></div>
+                    <div class="car-wheel wheel-front"></div>
+                    <div class="car-wheel wheel-back"></div>
+                </div>
+                <div class="finish-line"></div>
             </div>
-            <div class="stat-item">
-                <span class="stat-label">准确率</span>
-                <span class="stat-value" id="accuracy">100%</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">速度</span>
-                <span class="stat-value" id="speed">0</span>
-                <span class="stat-unit">CPM</span>
+            <div class="game-display-area">
+                <div class="current-char" id="gameChar">A</div>
+                <div class="hint">按对字母加速前进！</div>
             </div>
         </div>
 
-        <div class="display-area">
-            <div class="current-char" id="currentChar">A</div>
-            <div class="hint">按下显示的字母键</div>
+        <div id="statsArea">
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">正确</span>
+                    <span class="stat-value" id="correct">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">错误</span>
+                    <span class="stat-value" id="wrong">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">准确率</span>
+                    <span class="stat-value" id="accuracy">100%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">速度</span>
+                    <span class="stat-value" id="speed">0</span>
+                    <span class="stat-unit">CPM</span>
+                </div>
+            </div>
+
+            <div class="display-area">
+                <div class="current-char" id="currentChar">A</div>
+                <div class="hint">按下显示的字母键</div>
+            </div>
         </div>
 
         <div class="feedback" id="feedback"></div>
@@ -74,7 +103,7 @@
         </div>
 
         <div class="leaderboard">
-            <h3>排行榜</h3>
+            <h3 id="leaderboardTitle">练习排行榜</h3>
             <div id="leaderboardList" class="leaderboard-list">
                 <p class="empty-leaderboard">暂无记录</p>
             </div>

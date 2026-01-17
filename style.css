@@ -373,3 +373,198 @@ header p {
         flex-direction: column;
     }
 }
+
+.game-area {
+    margin-bottom: 20px;
+    display: none;
+}
+
+.game-area.show {
+    display: block;
+}
+
+.game-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #a8e6cf 0%, #88d8b0 100%);
+    border-radius: 15px;
+}
+
+.game-stat-item {
+    text-align: center;
+}
+
+.game-stat-label {
+    display: block;
+    color: #2d6a4f;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.game-stat-value {
+    display: inline-block;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #2d6a4f;
+}
+
+.game-stat-unit {
+    display: inline-block;
+    color: #2d6a4f;
+    font-size: 1em;
+    margin-left: 5px;
+}
+
+.race-track {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%);
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 4px solid #95a5a6;
+}
+
+.track-line {
+    position: absolute;
+    width: 100%;
+    height: 8px;
+    background: repeating-linear-gradient(
+        90deg,
+        #ffffff 0px,
+        #ffffff 30px,
+        transparent 30px,
+        transparent 60px
+    );
+    opacity: 0.3;
+}
+
+.track-line:nth-child(1) {
+    top: 25%;
+}
+
+.track-line:nth-child(2) {
+    top: 50%;
+}
+
+.track-line:nth-child(3) {
+    top: 75%;
+}
+
+.car {
+    position: absolute;
+    left: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 120px;
+    height: 50px;
+    transition: left 0.5s ease-out;
+    z-index: 10;
+}
+
+.car-body {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 100px;
+    height: 25px;
+    background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+    border-radius: 10px 20px 5px 5px;
+}
+
+.car-top {
+    position: absolute;
+    bottom: 35px;
+    left: 35px;
+    width: 50px;
+    height: 20px;
+    background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+    border-radius: 10px 10px 0 0;
+}
+
+.car-wheel {
+    position: absolute;
+    bottom: 0;
+    width: 25px;
+    height: 25px;
+    background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+    border-radius: 50%;
+    border: 3px solid #34495e;
+}
+
+.car-wheel::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #95a5a6;
+    border-radius: 50%;
+}
+
+.wheel-front {
+    left: 85px;
+}
+
+.wheel-back {
+    left: 10px;
+}
+
+.finish-line {
+    position: absolute;
+    right: 20px;
+    top: 0;
+    height: 100%;
+    width: 20px;
+    background: repeating-linear-gradient(
+        0deg,
+        #ffffff 0px,
+        #ffffff 10px,
+        #000000 10px,
+        #000000 20px
+    );
+}
+
+.finish-line::before {
+    content: '🏁';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+}
+
+.game-display-area {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+    border-radius: 15px;
+}
+
+.game-display-area .current-char {
+    font-size: 4em;
+    font-weight: bold;
+    color: #2d6a4f;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-display-area .hint {
+    color: #636e72;
+}
+
+#statsArea {
+    display: block;
+}
+
+#statsArea.hidden {
+    display: none;
+}

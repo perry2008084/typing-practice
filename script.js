@@ -14,6 +14,9 @@ class TypingPractice {
         this.timer = null;
         this.timeLeft = 60;
         this.startTime = null;
+        
+        this.gameDistance = 0;
+        this.gamePixelsPerMeter = 10;
 
         this.init();
     }
@@ -81,6 +84,25 @@ class TypingPractice {
         document.querySelectorAll('.mode-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.mode === mode);
         });
+        
+        const gameArea = document.getElementById('gameArea');
+        const statsArea = document.getElementById('statsArea');
+        const leaderboardTitle = document.getElementById('leaderboardTitle');
+        
+        if (mode === 'game') {
+            gameArea.classList.remove('hidden');
+            gameArea.classList.add('show');
+            statsArea.classList.add('hidden');
+            leaderboardTitle.textContent = '游戏排行榜';
+            this.loadGameLeaderboard();
+        } else {
+            gameArea.classList.remove('show');
+            gameArea.classList.add('hidden');
+            statsArea.classList.remove('hidden');
+            leaderboardTitle.textContent = '练习排行榜';
+            this.loadLeaderboard();
+        }
+        
         this.reset();
     }
 
@@ -95,17 +117,20 @@ class TypingPractice {
     newTarget() {
         if (this.practiceMode === 'letters') {
             this.currentTarget = this.letters[Math.floor(Math.random() * this.letters.length)];
-            document.querySelector('.hint').textContent = '按下显示的字母键';
+            const hint = this.currentMode === 'game' ? '按对字母加速前进！' : '按下显示的字母键';
+            document.querySelector('.hint').textContent = hint;
         } else {
             this.currentTarget = this.words[Math.floor(Math.random() * this.words.length)];
             this.currentIndex = 0;
-            document.querySelector('.hint').textContent = '依次输入单词的每个字母';
+            const hint = this.currentMode === 'game' ? '按对单词加速前进！' : '依次输入单词的每个字母';
+            document.querySelector('.hint').textContent = hint;
         }
         this.updateDisplay();
     }
 
     updateDisplay() {
-        const display = document.getElementById('currentChar');
+        const displayId = this.currentMode === 'game' ? 'gameChar' : 'currentChar';
+        const display = document.getElementById(displayId);
         if (this.practiceMode === 'letters') {
             display.textContent = this.currentTarget;
         } else {
@@ -117,7 +142,10 @@ class TypingPractice {
     }
 
     handleKeyPress(e) {
-        if (!this.isStarted && this.currentMode === 'timed') {
+        if (!this.isStarted && this.currentMode !== 'game') {
+            return;
+        }
+        if (!this.isStarted && this.currentMode === 'game') {
             return;
         }
 
@@ -151,6 +179,10 @@ class TypingPractice {
         this.showFeedback('正确！', 'correct');
         this.updateStats();
         
+        if (this.currentMode === 'game') {
+            this.moveCarForward();
+        }
+        
         if (this.practiceMode === 'letters') {
             this.newTarget();
         }
@@ -161,6 +193,23 @@ class TypingPractice {
         this.playSound('wrong');
         this.showFeedback('再试一次', 'wrong');
         this.updateStats();
+    }
+
+    moveCarForward() {
+        if (this.currentMode !== 'game') return;
+        
+        this.gameDistance += this.gamePixelsPerMeter;
+        const maxDistance = 1000;
+        const trackWidth = 80;
+        const carPosition = Math.min((this.gameDistance / maxDistance) * trackWidth, trackWidth);
+        
+        document.getElementById('car').style.left = `${carPosition}%`;
+        document.getElementById('distance').textContent = this.gameDistance;
+        
+        if (this.gameDistance >= maxDistance) {
+            this.gameDistance = 0;
+            document.getElementById('car').style.left = '5%';
+        }
     }
 
     showFeedback(message, type) {
@@ -184,6 +233,10 @@ class TypingPractice {
 
         const speed = this.calculateSpeed();
         document.getElementById('speed').textContent = speed;
+        
+        if (this.currentMode === 'game') {
+            document.getElementById('distance').textContent = this.gameDistance;
+        }
     }
 
     calculateSpeed() {
@@ -219,6 +272,7 @@ class TypingPractice {
         this.wrong = 0;
         this.timeLeft = 60;
         this.startTime = null;
+        this.gameDistance = 0;
         
         if (this.timer) {
             clearInterval(this.timer);
@@ -230,15 +284,46 @@ class TypingPractice {
         timerDisplay.classList.remove('show');
         timerDisplay.classList.add('hidden');
         document.getElementById('startBtn').disabled = false;
-        document.getElementById('startBtn').textContent = '开始练习';
+        document.getElementById('startBtn').textContent = this.currentMode === 'game' ? '开始游戏' : '开始练习';
         this.updateProgressBar(100);
+        
+        document.getElementById('car').style.left = '5%';
+        document.getElementById('distance').textContent = '0';
         
         this.updateStats();
         this.newTarget();
     }
 
     start() {
-        if (this.currentMode === 'timed') {
+        if (this.currentMode === 'game') {
+            this.isStarted = true;
+            this.startTime = Date.now();
+            this.timeLeft = 60;
+            this.gameDistance = 0;
+            
+            const timerDisplay = document.getElementById('timerDisplay');
+            timerDisplay.classList.remove('hidden');
+            timerDisplay.classList.add('show');
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('startBtn').textContent = '游戏中...';
+            
+            document.getElementById('car').style.left = '5%';
+            document.getElementById('distance').textContent = '0';
+            
+            this.updateProgressBar(100);
+            
+            this.timer = setInterval(() => {
+                this.timeLeft--;
+                document.getElementById('timer').textContent = this.timeLeft;
+                
+                const progress = (this.timeLeft / 60) * 100;
+                this.updateProgressBar(progress);
+                
+                if (this.timeLeft <= 0) {
+                    this.endGame();
+                }
+            }, 1000);
+        } else if (this.currentMode === 'timed') {
             this.isStarted = true;
             this.startTime = Date.now();
             this.timeLeft = 60;
@@ -275,14 +360,25 @@ class TypingPractice {
         this.timer = null;
         this.isStarted = false;
         
-        const score = this.correct;
-        const accuracy = this.correct + this.wrong > 0 ? Math.round((this.correct / (this.correct + this.wrong)) * 100) : 0;
-        
-        this.saveScore(score, accuracy);
-        
-        alert(`时间到！\n正确: ${this.correct}\n错误: ${this.wrong}\n准确率: ${accuracy}%\n速度: ${score} CPM`);
-        
-        this.reset();
+        if (this.currentMode === 'game') {
+            const score = this.gameDistance;
+            const accuracy = this.correct + this.wrong > 0 ? Math.round((this.correct / (this.correct + this.wrong)) * 100) : 0;
+            
+            this.saveGameScore(score, accuracy);
+            
+            alert(`时间到！\n行驶距离: ${score}米\n正确: ${this.correct}\n错误: ${this.wrong}\n准确率: ${accuracy}%`);
+            
+            this.reset();
+        } else {
+            const score = this.correct;
+            const accuracy = this.correct + this.wrong > 0 ? Math.round((this.correct / (this.correct + this.wrong)) * 100) : 0;
+            
+            this.saveScore(score, accuracy);
+            
+            alert(`时间到！\n正确: ${this.correct}\n错误: ${this.wrong}\n准确率: ${accuracy}%\n速度: ${score} CPM`);
+            
+            this.reset();
+        }
     }
 
     loadLeaderboard() {
@@ -314,6 +410,34 @@ class TypingPractice {
         }).join('');
     }
 
+    loadGameLeaderboard() {
+        const scores = JSON.parse(localStorage.getItem('gameScores') || '[]');
+        const leaderboardList = document.getElementById('leaderboardList');
+        
+        if (scores.length === 0) {
+            leaderboardList.innerHTML = '<p class="empty-leaderboard">暂无记录</p>';
+            return;
+        }
+
+        scores.sort((a, b) => b.score - a.score);
+        const topScores = scores.slice(0, 10);
+
+        leaderboardList.innerHTML = topScores.map((score, index) => {
+            const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+            const modeText = score.practiceMode === 'letters' ? '字母' : '单词';
+            
+            return `
+                <div class="leaderboard-item ${rankClass}">
+                    <span class="leaderboard-rank">${index + 1}</span>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-mode">${modeText} / 赛车游戏</div>
+                    </div>
+                    <div class="leaderboard-score">${score.score} 米</div>
+                </div>
+            `;
+        }).join('');
+    }
+
     saveScore(score, accuracy) {
         const scores = JSON.parse(localStorage.getItem('typingScores') || '[]');
         
@@ -327,6 +451,21 @@ class TypingPractice {
 
         localStorage.setItem('typingScores', JSON.stringify(scores));
         this.loadLeaderboard();
+    }
+
+    saveGameScore(score, accuracy) {
+        const scores = JSON.parse(localStorage.getItem('gameScores') || '[]');
+        
+        scores.push({
+            score: score,
+            accuracy: accuracy,
+            practiceMode: this.practiceMode,
+            mode: 'game',
+            date: new Date().toISOString()
+        });
+
+        localStorage.setItem('gameScores', JSON.stringify(scores));
+        this.loadGameLeaderboard();
     }
 }
 
