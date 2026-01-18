@@ -568,3 +568,133 @@ header p {
 #statsArea.hidden {
     display: none;
 }
+
+.letter-selector {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    display: none;
+}
+
+.letter-selector.show {
+    display: block;
+}
+
+.selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.selector-title {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #495057;
+}
+
+.selector-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.selector-btn.select-all {
+    background: #28a745;
+    color: white;
+}
+
+.selector-btn.select-all:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.selector-btn.clear-all {
+    background: #dc3545;
+    color: white;
+}
+
+.selector-btn.clear-all:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.letter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.letter-item {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #495057;
+}
+
+.letter-item:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.letter-item.selected {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.selected-count {
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.selected-text {
+    color: #6c757d;
+    font-size: 0.95em;
+}
+
+.selected-count #selectedCount {
+    color: #667eea;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+@media (max-width: 600px) {
+    .letter-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    
+    .letter-item {
+        width: 40px;
+        height: 40px;
+        font-size: 1em;
+    }
+    
+    .selector-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

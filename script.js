@@ -17,6 +17,8 @@ class TypingPractice {
         
         this.gameDistance = 0;
         this.gamePixelsPerMeter = 10;
+        
+        this.selectedLetters = new Set(this.letters);
 
         this.init();
     }
@@ -77,6 +79,9 @@ class TypingPractice {
         document.getElementById('startBtn').addEventListener('click', () => this.start());
         document.getElementById('resetBtn').addEventListener('click', () => this.reset());
         document.getElementById('soundBtn').addEventListener('click', () => this.toggleSound());
+        
+        // 字母选择器事件
+        this.bindLetterSelectorEvents();
     }
 
     switchMode(mode) {
@@ -111,12 +116,28 @@ class TypingPractice {
         document.querySelectorAll('.practice-mode-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.practice === mode);
         });
+        
+        const letterSelector = document.getElementById('letter-selector');
+        if (mode === 'letters') {
+            letterSelector.classList.remove('hidden');
+            letterSelector.classList.add('show');
+        } else {
+            letterSelector.classList.remove('show');
+            letterSelector.classList.add('hidden');
+        }
+        
         this.reset();
     }
 
     newTarget() {
         if (this.practiceMode === 'letters') {
-            this.currentTarget = this.letters[Math.floor(Math.random() * this.letters.length)];
+            const availableLetters = Array.from(this.selectedLetters);
+            if (availableLetters.length === 0) {
+                this.selectedLetters = new Set(this.letters);
+                this.updateSelectedLetters();
+                availableLetters.push(...this.letters);
+            }
+            this.currentTarget = availableLetters[Math.floor(Math.random() * availableLetters.length)];
             const hint = this.currentMode === 'game' ? '按对字母加速前进！' : '按下显示的字母键';
             document.querySelector('.hint').textContent = hint;
         } else {
@@ -292,6 +313,66 @@ class TypingPractice {
         
         this.updateStats();
         this.newTarget();
+    }
+
+    bindLetterSelectorEvents() {
+        // 字母项目点击事件
+        document.querySelectorAll('.letter-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const letter = item.dataset.letter;
+                if (this.selectedLetters.has(letter)) {
+                    this.selectedLetters.delete(letter);
+                    item.classList.remove('selected');
+                } else {
+                    this.selectedLetters.add(letter);
+                    item.classList.add('selected');
+                }
+                this.updateSelectedCount();
+            });
+        });
+
+        // 全选按钮
+        document.querySelector('.selector-btn.select-all').addEventListener('click', () => {
+            this.selectAllLetters();
+        });
+
+        // 清空按钮
+        document.querySelector('.selector-btn.clear-all').addEventListener('click', () => {
+            this.clearAllLetters();
+        });
+    }
+
+    selectAllLetters() {
+        this.selectedLetters = new Set(this.letters);
+        document.querySelectorAll('.letter-item').forEach(item => {
+            item.classList.add('selected');
+        });
+        this.updateSelectedCount();
+    }
+
+    clearAllLetters() {
+        this.selectedLetters.clear();
+        document.querySelectorAll('.letter-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+        this.updateSelectedCount();
+    }
+
+    updateSelectedCount() {
+        const count = this.selectedLetters.size;
+        document.getElementById('selectedCount').textContent = count;
+    }
+
+    updateSelectedLetters() {
+        document.querySelectorAll('.letter-item').forEach(item => {
+            const letter = item.dataset.letter;
+            if (this.selectedLetters.has(letter)) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+        this.updateSelectedCount();
     }
 
     start() {
